@@ -1,0 +1,88 @@
+// =======================================================
+// JLSys Gradle Buildscript
+// -------------------------------------------------------
+//
+// @author Ryan
+//
+// =======================================================
+
+
+// =======================================================
+// Plugins
+// =======================================================
+apply plugin: 'java'
+apply plugin: 'jacoco'
+
+// =======================================================
+// Options
+// =======================================================
+archivesBaseName = 'jlsys'
+sourceCompatibility = '1.8'
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+// =======================================================
+// Repositories
+// =======================================================
+repositories {
+	mavenLocal()
+    mavenCentral()
+	jcenter()
+}
+
+// =======================================================
+// Configurations
+// =======================================================
+configurations {
+	javadoc {
+		transitive false
+	}
+	testJavadoc {
+		transitive false
+	}
+}
+
+// =======================================================
+// Dependencies
+// =======================================================
+dependencies {
+    // Main Dependencies
+    compile 'com.google.guava:guava:23.1-jre'
+    javadoc 'com.google.guava:guava:23.1-jre:javadoc'
+    
+    // Testing Dependencies
+    testCompile 'junit:junit:4.12'
+	testJavadoc 'junit:junit:4.12:javadoc'
+}
+
+// =======================================================
+// Code Coverage
+// =======================================================
+jacocoTestReport {
+	group = "Reporting"
+	description = "Generate Jacoco coverage reports after running tests."
+	additionalSourceDirs = files(sourceSets.main.allJava.srcDirs)
+}
+
+// =======================================================
+// Sources Jar
+// =======================================================
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+	from sourceSets.main.allSource
+}
+
+// =======================================================
+// Javadoc Jar
+// =======================================================
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+// =======================================================
+// Artifacts
+// =======================================================
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
